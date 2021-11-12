@@ -12,8 +12,9 @@ protocol PokemonListDisplayng: AnyObject {
     func listOrder(result: [Results])
 }
 
-class PokemonListViewController: UIViewController, PokemonListDisplayng {
-    
+class PokemonListViewController: UIViewController {
+    // MARK - Components
+
     private var contentView: PokemonListView?
     private let interactor: PokemonListInteracting
     private var pokemons: PokemonsList?
@@ -60,6 +61,16 @@ class PokemonListViewController: UIViewController, PokemonListDisplayng {
         self.view = contentView
     }
     
+    // MARK: - Private
+    
+    @objc private func orderList() {
+        guard let pokemonsList = pokemons else { return }
+        interactor.listOrder(pokemons: pokemonsList)
+    }
+    
+}
+
+extension PokemonListViewController: PokemonListDisplayng {
     func setPokemons(pokemons: PokemonsList) {
         count = pokemons.count
 //        self.pokemons?.results.append(contentsOf: pokemons.results)
@@ -71,15 +82,12 @@ class PokemonListViewController: UIViewController, PokemonListDisplayng {
         self.pokemons?.results = result
         tableView.reloadData()
     }
-    
-    @objc private func orderList() {
-        guard let pokemonsList = pokemons else { return }
-        interactor.listOrder(pokemons: pokemonsList)
-    }
 }
 
+
+// MARK: - Table View
+
 extension PokemonListViewController: UITableViewDelegate, UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         pokemons?.results.count ?? .zero
     }
